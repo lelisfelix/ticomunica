@@ -1,0 +1,72 @@
+{
+    "vereadores": {
+        "1": {
+            "nome": "Rodrigo Alves \u2013 PL",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Rodrigo.jpg"
+        },
+        "2": {
+            "nome": "Eduardo Almeida \u2013 Podemos",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Eduardo.jpg"
+        },
+        "3": {
+            "nome": "Paula Lima \u2013 PL",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Paula.jpg"
+        },
+        "4": {
+            "nome": "Geraldinho das Almas \u2013 PSDB",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Geraldo.jpg"
+        },
+        "5": {
+            "nome": "Jo\u00e3o Pedro Barcelos \u2013 Uni\u00e3o Brasil",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Jo%C3%A3o%20Pedro.jpg"
+        },
+        "6": {
+            "nome": "Luis Ricardo Bomba \u2013 Podemos",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Luis.jpg"
+        },
+        "7": {
+            "nome": "Jader 'Dois Irm\u00e3os' \u2013 Podemos",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Jader.jpg"
+        },
+        "8": {
+            "nome": "Cabo Jota \u2013 Podemos",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Jota.jpg"
+        },
+        "9": {
+            "nome": "Jo\u00e3o Batista Nen\u00ea \u2013 MDB",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Nen\u00ea.jpg"
+        },
+        "10": {
+            "nome": "Silvania Lopes \u2013 MDB",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Silvania.jpg"
+        },
+        "11": {
+            "nome": "Julio Moraes \u2013 MDB",
+            "senha": "1234",
+            "foto": "\/camara\/fotos_\/Julio.jpg"
+        }
+    },
+    "votacao": {
+        "ativa": true,
+        "secreta": false,
+        "votos": {
+            "1": "Sim"
+        }
+    },
+    "ausentes": [],
+    "presentes": [
+        "1",
+        "2",
+        "3"
+    ]
+}

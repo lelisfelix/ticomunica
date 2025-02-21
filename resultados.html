@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resultados da Votação</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #121212;
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            display: none; /* Oculta por padrão */
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            width: 700px; /* Largura fixa de 500px */
+            height: 800px; /* Altura fixa de 650px */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+            overflow-y: auto; /* Adiciona barra de rolagem se necessário */
+        }
+
+        .totals {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            text-align: left;
+            font-size: 25px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .total-item {
+            padding: 10px;
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .sim-total { background: #008000; color: #ffffff; }
+        .nao-total { background: #8B0000; color: #ffffff; }
+        .abstencao-total { background: #ffffff; color: #000000; }
+        .ausente-total { background: #555555; color: #bbbbbb; }
+
+        .list-group {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            display: grid;
+            grid-template-columns: 1fr 1fr; /* Duas colunas */
+            gap: 8px; /* Espaçamento entre os itens */
+        }
+
+        .list-group-item {
+            display: flex;
+            align-items: center;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 0; /* Remove a margem inferior */
+            font-weight: bold;
+            font-size: 25px;
+        }
+
+        .vereador-foto {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            margin-right: 15px;
+            border: 2px solid #fff;
+        }
+
+        .sim { background: #008000; color: #ffffff; }
+        .nao { background: #8B0000; color: #ffffff; }
+        .abstencao { background: #ffffff; color: #000000; }
+        .ausente { background: #555555; color: #bbbbbb; }
+
+        #mensagem-secreta {
+            display: none;
+            text-align: center;
+            font-size: 18px;
+            color: red;
+            font-weight: bold;
+            margin-top: 15px;
+        }
+
+        .vereador-info {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .vereador-nome {
+            font-size: 25px;
+            font-weight: bold;
+        }
+
+        .vereador-partido {
+            font-size: 18px;
+            font-weight: normal;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="votacao-container">
+        <div class="totals">
+            <p class="total-item sim-total">Sim: <span id="sim-votos">0</span></p>
+            <p class="total-item nao-total">Não: <span id="nao-votos">0</span></p>
+            <p class="total-item abstencao-total">Abstenção: <span id="abstencao-votos">0</span></p>
+            <p class="total-item ausente-total">Ausente: <span id="ausente-votos">0</span></p>
+        </div>
+
+        <ul id="votos-individuais" class="list-group"></ul>
+        <p id="mensagem-secreta"> Votação Secreta Ativada</p>
+    </div>
+
+    <script>
+        function atualizarResultados() {
+            let url = `db.json?_t=${new Date().getTime()}`;
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    let votos = data.votacao.votos;
+                    let vereadores = data.vereadores;
+                    let votacaoSecreta = data.votacao.secreta;
+                    let votacaoAtiva = data.votacao.ativa;
+                    let ausentes = data.ausentes;
+
+                    let container = document.getElementById('votacao-container');
+                    let lista = document.getElementById('votos-individuais');
+                    let mensagemSecreta = document.getElementById('mensagem-secreta');
+
+                    // Se a votação NÃO estiver ativa, oculta tudo
+                    if (!votacaoAtiva) {
+                        container.style.display = "none";
+                        document.body.style.background = "transparent";  // Torna o fundo transparente
+                        return;
+                    } else {
+                        container.style.display = "block";
+                        document.body.style.background = "#121212";  // Restaura o fundo escuro
+                    }
+
+                    let sim = 0, nao = 0, abstencao = 0, ausente = 0;
+                    lista.innerHTML = '';
+
+                    for (let id in vereadores) {
+                        let nomeCompleto = vereadores[id].nome;
+                        let foto = vereadores[id].foto;
+                        let voto = votos[id] || "Não votou";
+                        let classe = "nao-votou";
+
+                        // Separa o nome do partido, considerando que o partido vem após "–"
+                        let partes = nomeCompleto.split('–');
+                        let nome = partes[0].trim();
+                        let partido = partes[1] ? partes[1].trim() : "Sem partido";
+
+                        if (ausentes.includes(id)) {
+                            voto = "Ausente";
+                            ausente++;
+                            classe = "ausente";
+                        } else if (voto === "Sim") {
+                            sim++;
+                            classe = "sim";
+                        } else if (voto === "Não") {
+                            nao++;
+                            classe = "nao";
+                        } else if (voto === "Abstenção") {
+                            abstencao++;
+                            classe = "abstencao";
+                        }
+
+                        if (!votacaoSecreta) {
+                            let item = document.createElement('li');
+                            item.classList.add('list-group-item', classe);
+                            item.innerHTML = `
+                                <img src="${foto}" class="vereador-foto">
+                                <div class="vereador-info">
+                                    <span class="vereador-nome">${nome}</span>
+                                    <span class="vereador-partido">${partido}</span>
+                                </div>
+                            `;
+                            lista.appendChild(item);
+                        }
+                    }
+
+                    document.getElementById('sim-votos').textContent = sim;
+                    document.getElementById('nao-votos').textContent = nao;
+                    document.getElementById('abstencao-votos').textContent = abstencao;
+                    document.getElementById('ausente-votos').textContent = ausente;
+
+                    mensagemSecreta.style.display = votacaoSecreta ? 'block' : 'none';
+                })
+                .catch(error => console.error('Erro ao carregar dados:', error));
+        }
+
+        setInterval(atualizarResultados, 2000);
+        atualizarResultados();
+    </script>
+
+</body>
+</html>
